@@ -1,0 +1,55 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_db_volume:/var/lib/postgresql/data
+    restart: always  
+
+  webserver:
+    build: .
+    image: my_airflow:2.6.0
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: "Zw6tlFrxfoNkjJO8tSfCsEaiVLDKXYbDpby0vjnB3pQ="
+      GOOGLE_APPLICATION_CREDENTIALS: "/opt/airflow/dags/gcp-credentials.json"
+      _AIRFLOW_WWW_USER_USERNAME: ${AIRFLOW_USER}  
+      _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_PASSWORD}  
+      _AIRFLOW_WWW_USER_EMAIL: ${AIRFLOW_EMAIL}  
+      _AIRFLOW_WWW_USER_ROLE: ${AIRFLOW_ROLE} 
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "airflow db upgrade &&
+               airflow users create --username ${AIRFLOW_USER} --password ${AIRFLOW_PASSWORD} --firstname Admin --lastname User --role ${AIRFLOW_ROLE} --email ${AIRFLOW_EMAIL} &&
+               airflow webserver"
+
+  scheduler:
+    image: my_airflow:2.6.0
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: "Zw6tlFrxfoNkjJO8tSfCsEaiVLDKXYbDpby0vjnB3pQ="
+      GOOGLE_APPLICATION_CREDENTIALS: "/opt/airflow/dags/gcp-credentials.json"  
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    command: scheduler
+    restart: always  
+
+volumes:
+  postgres_db_volume:
