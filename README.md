@@ -75,7 +75,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 ### **3. Run the pipeline script**  
 
-#### **Run the Data Pipeline manually**  
+#### **Run the Data Pipeline manually:**  
 ```bash
 python Data_pipeline/dags/fetch_data.py        # Fetch raw data
 python Data_pipeline/dags/data_process.py      # Process raw data
@@ -85,13 +85,13 @@ python Data_pipeline/dags/sellerId_check.py    # Validate seller ID information
 python Data_pipeline/dags/mlops_airflow.py     # Run MLOps integration
 ```
 
-#### **Run the pipeline using Apache Airflow**  
+#### **Run the pipeline using Apache Airflow:**  
 ```bash
 airflow db init                      # Initialize Airflow database
 airflow scheduler &                   # Start Airflow scheduler
 airflow webserver --port 8080         # Start Airflow webserver (http://localhost:8080)
 ```
-- **Enable and trigger DAGs inside Airflow UI**.
+**Enable and trigger DAGs inside Airflow UI:**.
 
 ### **4. Monitor the output**  
 - The processed output files will be stored in the **data/** folder.  
@@ -117,7 +117,7 @@ SellerCentral-Chatbot-System/
 │   │   ├── config.py            # Configuration settings
 │   │   ├── data_process.py      # Data processing logic
 │   │   ├── dataflow_processing.py  # Main dataflow script
-│   │   ├── fetch_data.py        # Fetches raw data
+│   │   ├── fetch_data.py        # Fetches raw data from GCS
 │   │   ├── logging_setup.py     # Logging configurations
 │   │   ├── mlops_airflow.py     # MLOps integration with Airflow
 │   │   ├── sellerId_check.py    # Data validation script
@@ -131,6 +131,23 @@ SellerCentral-Chatbot-System/
 │   ├── logs/                    # Logs for debugging and monitoring
 │   │   ├── .gitignore
 │   │   ├── pipeline.log         # Execution logs
+│   │
+│   ├── tests/                    # Tests for pipeline validation
+│   │   ├── __init__.py           # Makes tests a package
+│   │   ├── test_fetch_data.py     # Test for fetch_data.py (GCS Extraction)
+│   │   ├── test_data_process.py   # Test for data_process.py (Transformation)
+│   │   ├── test_bias_detection.py # Test for bias_detection.py
+│   │   ├── test_pipeline.py       # Integration test for full ETL pipeline
+│   │   ├── test_schema.py         # Test for data schema validation (BigQuery)
+│   │   ├── test_dvc.py            # Test for DVC data versioning
+│   │   ├── test_airflow.py        # Test for Airflow DAG execution
+│   │   ├── test_bias.py           # Test for bias detection using Fairlearn
+│   │   ├── test_gcs_upload.py     # Test for uploading files to GCS
+│   │   ├── test_bigquery.py       # Test for data insertion into BigQuery
+│
+├── .github/workflows/             # CI/CD automation for testing
+│   ├── ci.yml                     # GitHub Actions workflow for local testing
+│   ├── ci-gcp.yml                  # GitHub Actions workflow for GCP testing
 │
 ├── docker-compose.yml           # Docker Compose file for container orchestration
 ├── Dockerfile                   # Docker setup for the project
@@ -138,7 +155,6 @@ SellerCentral-Chatbot-System/
 ├── .gitignore                    # Ignore unnecessary files
 ├── README.md                     # Documentation
 ```
-
 ## Reproducibility & Data Versioning
 
 - ensure reproducibility, follow these steps:
