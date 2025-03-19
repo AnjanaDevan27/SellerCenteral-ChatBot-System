@@ -141,9 +141,6 @@ SellerCentral-Chatbot-System/
 │   │   ├── test_schema.py         # Test for data schema validation (BigQuery)
 │   │   ├── test_dvc.py            # Test for DVC data versioning
 │   │   ├── test_airflow.py        # Test for Airflow DAG execution
-│   │   ├── test_bias.py           # Test for bias detection using Fairlearn
-│   │   ├── test_gcs_upload.py     # Test for uploading files to GCS
-│   │   ├── test_bigquery.py       # Test for data insertion into BigQuery
 │
 ├── .github/workflows/             # CI/CD automation for testing
 │   ├── ci.yml                     # GitHub Actions workflow for local testing
